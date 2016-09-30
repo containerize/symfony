@@ -1,10 +1,8 @@
 FROM php:7.0-fpm
 
-# update
-RUN apt-get update 
-
 # extension - except: imagick apc xdebug geoip redis
-RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libmcrypt-dev libpng12-dev
+RUN apt-get update && apt-get install -y git libfreetype6-dev libjpeg62-turbo-dev libmcrypt-dev libpng12-dev \
+    --no-install-recommends && rm -r /var/lib/apt/lists/*
 RUN docker-php-ext-install iconv mcrypt mysqli pdo pdo_mysql mbstring gd
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ 
 
