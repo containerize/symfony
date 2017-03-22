@@ -32,7 +32,7 @@ COPY conf/nginx/app.conf /etc/nginx/conf.d/app.conf
 COPY conf/php/docker-php-ext-opcache.ini /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
 COPY conf/php/symfony.ini /usr/local/etc/php/conf.d/symfony.ini
 COPY conf/php/php-fpm.conf /usr/local/etc/php-fpm.conf
-COPY conf/supervisord.conf /etc/supervisord.conf
+COPY conf/supervisord/supervisor.ini /etc/supervisor.d/supervisor.ini
 
 EXPOSE 80
 
@@ -41,4 +41,4 @@ WORKDIR /symfony
 # volume logs
 VOLUME ["/var/log/nginx/"]
 
-CMD ["/usr/bin/supervisord", "-n", "-c",  "/etc/supervisord.conf"]
+CMD ["/usr/bin/supervisord"]
