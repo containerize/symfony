@@ -1,9 +1,6 @@
 FROM php:fpm-alpine
 
-RUN echo 'http://dl-cdn.alpinelinux.org/alpine/edge/main' >> /etc/apk/repositories \
-    && echo 'http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories \
-    && echo 'http://dl-cdn.alpinelinux.org/alpine/edge/community' >> /etc/apk/repositories \
-    && apk add --no-cache git openssh-client nginx \
+RUN apk add --no-cache git openssh-client nginx \
     autoconf libc-dev make \
     freetype libpng libjpeg-turbo freetype-dev libjpeg-turbo-dev libpng-dev \
     icu-dev \
