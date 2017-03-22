@@ -1,7 +1,7 @@
 FROM php:fpm-alpine
 
 RUN apk add --no-cache git openssh-client nginx \
-    autoconf libc-dev make \
+    autoconf gcc libc-dev make \
     freetype libpng libjpeg-turbo freetype-dev libjpeg-turbo-dev libpng-dev \
     icu-dev \
     libmcrypt-dev readline-dev \
