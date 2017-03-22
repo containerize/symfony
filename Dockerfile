@@ -1,6 +1,6 @@
 FROM php:fpm-alpine
 
-RUN apk add --no-cache git openssh-client \
+RUN apk add --no-cache git openssh-client nginx \
     freetype libpng libjpeg-turbo freetype-dev libjpeg-turbo-dev libpng-dev \
     icu-dev \
     libmcrypt-dev readline-dev \
@@ -14,39 +14,42 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-png-dir
     bcmath calendar exif intl sockets xsl zip bz2
 
 # extension - redis
-RUN pecl install -o -f redis \
-    && rm -rf /tmp/pear \
-    && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
+ENV PHPREDIS_VERSION 2.2.7
+
+# RUN pecl install -o -f redis \
+#     && rm -rf /tmp/pear \
+#     && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
+RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz \
+    && tar xfz /tmp/redis.tar.gz \
+    && rm -r /tmp/redis.tar.gz \
+    && mv phpredis-$PHPREDIS_VERSION /usr/src/php/ext/redis \
+    && docker-php-ext-install redis
+
 
 # composer
 ENV COMPOSER_HOME /composer
 
-# Allow Composer to be run as root
+# allow Composer to be run as root
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
 RUN curl -sS https://getcomposer.org/installer | php -- \
     --install-dir=/usr/local/bin \
     --filename=composer
 
-# install caddy
-RUN curl --silent --show-error --fail --location \
-      --header "Accept: application/tar+gzip, application/x-gzip, application/octet-stream" -o - \
-      "https://caddyserver.com/download/build?os=linux&arch=amd64&features=${plugins}" \
-    | tar --no-same-owner -C /usr/bin/ -xz caddy \
- && chmod 0755 /usr/bin/caddy \
- && /usr/bin/caddy -version
+# configuration
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY app.conf /etc/nginx/conf.d/app.conf
+COPY docker-php-ext-opcache.ini /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
+COPY symfony.ini /usr/local/etc/php/conf.d/symfony.ini
+COPY php-fpm.conf /usr/local/etc/php-fpm.conf
 
-COPY Caddyfile /etc/Caddyfile
+RUN adduser -D -g '' -G www-data  www-data
 
-EXPOSE 80 443 2015
-
-
-# RUN usermod -u 1000 www-data
+EXPOSE 80
 
 WORKDIR /symfony
 
-VOLUME ["/user/local/etc/php/conf.d/symfony.ini"]
-VOLUME ["/etc/php-fpm.conf"]
+# volume logs
+VOLUME ["/var/log/nginx/"]
 
-ENTRYPOINT ["/usr/bin/caddy"]
-CMD ["--conf", "/etc/Caddyfile", "--log", "stdout"]
+ENTRYPOINT ["nginx"]
