@@ -48,7 +48,7 @@ COPY Caddyfile /etc/Caddyfile
 EXPOSE 80 443 2015
 
 
-RUN usermod -u 1000 www-data
+# RUN usermod -u 1000 www-data
 
 WORKDIR /symfony
 
