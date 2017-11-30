@@ -1,7 +1,7 @@
 FROM php:fpm-jessie
 
 RUN apt-get update \
-    && apt-get install -y supervisor git nginx \
+    && apt-get install -y glusterfs-client supervisor git nginx \
     # gd
     libjpeg62-turbo-dev libpng-dev libfreetype6-dev \ 
     # intl
