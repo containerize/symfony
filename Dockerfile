@@ -16,6 +16,8 @@ RUN apt-get update \
     && mkdir -p /var/run/sshd \
     # cleanup apt-get
     && rm -r /var/lib/apt/lists/* \
+    # remember pass
+    && sed -i s/#PasswordAuthentication.*/PasswordAuthentication\ no/ /etc/ssh/sshd_config \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-png-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-configure intl \
     && docker-php-ext-install opcache pdo_mysql iconv mcrypt mysqli pdo mbstring gd bcmath calendar exif intl sockets xsl zip bz2 \
@@ -38,6 +40,7 @@ COPY conf/php/docker-php-ext-opcache.ini /usr/local/etc/php/conf.d/docker-php-ex
 COPY conf/php/symfony.ini /usr/local/etc/php/conf.d/symfony.ini
 COPY conf/php/php-fpm.conf /usr/local/etc/php-fpm.conf
 COPY conf/supervisord/supervisor.conf /etc/supervisor/conf.d/supervisor.conf
+COPY conf/ssh/ssh_config /etc/ssh/ssh_config
 
 EXPOSE 80
 
