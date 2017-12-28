@@ -1,9 +1,9 @@
-FROM php:fpm-jessie
+FROM php:7.2-fpm-stretch
 
 RUN apt-get update \
     && apt-get install -y glusterfs-client supervisor git nginx openssh-server vim \
     # gd
-    libjpeg62-turbo-dev libpng12-dev libfreetype6-dev \ 
+    libjpeg62-turbo-dev libfreetype6-dev \ 
     # intl
     libicu-dev \
     # mcrypt
@@ -20,18 +20,23 @@ RUN apt-get update \
     && sed -i s/#PasswordAuthentication.*/PasswordAuthentication\ no/ /etc/ssh/sshd_config \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-png-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-configure intl \
-    && docker-php-ext-install opcache pdo_mysql iconv mcrypt mysqli pdo mbstring gd bcmath calendar exif intl sockets xsl zip bz2 \
+    # mcrypt
+    && echo ' ' | pecl install -f mcrypt-1.0.1 \
+    && docker-php-ext-enable mcrypt \
     # redis
     && echo ' ' | pecl install -f redis \
+    && docker-php-ext-enable redis \
     && rm -rf /tmp/pear \
+    && echo "extension=mcrypt.so" > /usr/local/etc/php/conf.d/docker-php-ext-mcrypt.ini \
     && echo "extension=redis.so" > /usr/local/etc/php/conf.d/docker-php-ext-redis.ini \
+    && docker-php-ext-install opcache pdo_mysql iconv mysqli pdo mbstring gd bcmath calendar exif intl sockets xsl zip bz2 \
     # composer
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 
 ENV COMPOSER_HOME /composer
 # allow Composer to be run as root
-# ENV COMPOSER_ALLOW_SUPERUSER 1
+ENV COMPOSER_ALLOW_SUPERUSER 1
 
 # configuration
 COPY conf/nginx/nginx.conf /etc/nginx/nginx.conf
