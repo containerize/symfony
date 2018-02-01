@@ -1,7 +1,7 @@
 FROM php:fpm-jessie
 
 RUN apt-get update \
-    && apt-get install -y glusterfs-client supervisor git nginx openssh-server vim \
+    && apt-get install -y glusterfs-client supervisor git nginx openssh-server vim locales \
     # gd
     libjpeg62-turbo-dev libpng12-dev libfreetype6-dev \ 
     # intl
@@ -26,7 +26,8 @@ RUN apt-get update \
     && rm -rf /tmp/pear \
     && echo "extension=redis.so" > /usr/local/etc/php/conf.d/docker-php-ext-redis.ini \
     # composer
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen && locale-gen 
 
 
 ENV COMPOSER_HOME /composer
@@ -34,8 +35,6 @@ ENV COMPOSER_HOME /composer
 # ENV COMPOSER_ALLOW_SUPERUSER 1
 
 ENV LANG en_US.UTF-8  
-ENV LANGUAGE en_US:en  
-ENV LC_ALL en_US.UTF-8
 
 # configuration
 COPY conf/nginx/nginx.conf /etc/nginx/nginx.conf
