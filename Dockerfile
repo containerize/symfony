@@ -33,6 +33,10 @@ ENV COMPOSER_HOME /composer
 # allow Composer to be run as root
 # ENV COMPOSER_ALLOW_SUPERUSER 1
 
+ENV LANG en_US.UTF-8  
+ENV LANGUAGE en_US:en  
+ENV LC_ALL en_US.UTF-8
+
 # configuration
 COPY conf/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY conf/nginx/app.conf /etc/nginx/conf.d/app.conf
