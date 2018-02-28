@@ -27,32 +27,15 @@ RUN apt-get update \
     && echo "extension=redis.so" > /usr/local/etc/php/conf.d/docker-php-ext-redis.ini \
     # composer
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    # support zh
     && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen && locale-gen 
 
 
 ENV COMPOSER_HOME /composer
 # allow Composer to be run as root
-# ENV COMPOSER_ALLOW_SUPERUSER 1
+ENV COMPOSER_ALLOW_SUPERUSER 1
 
-ENV LANG en_US.UTF-8  
+ENV LANG en_US.UTF-8
 
 # configuration
-COPY conf/nginx/nginx.conf /etc/nginx/nginx.conf
-COPY conf/nginx/app.conf /etc/nginx/conf.d/app.conf
 COPY conf/php/docker-php-ext-opcache.ini /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
-COPY conf/php/symfony.ini /usr/local/etc/php/conf.d/symfony.ini
-COPY conf/php/fpm.d/docker.conf /usr/local/etc/php-fpm.d/docker.conf
-COPY conf/supervisor/conf.d /etc/supervisor/conf.d
-COPY conf/ssh/ssh_config /etc/ssh/ssh_config
-
-EXPOSE 80
-
-WORKDIR /symfony
-
-# volumes
-VOLUME ["/var/log"]
-
-VOLUME ["/symfony"]
-
-ENTRYPOINT ["supervisord"]
-CMD ["-n", "-c", "/etc/supervisor/supervisord.conf"]
