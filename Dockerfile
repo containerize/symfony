@@ -1,5 +1,9 @@
 FROM containerize/symfony:base
 
+RUN  apt-get update \
+    && apt-get install -y sox \
+    && rm -r /var/lib/apt/lists/*
+
 # configuration
 COPY conf/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY conf/nginx/app.conf /etc/nginx/conf.d/app.conf
