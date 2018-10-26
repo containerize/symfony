@@ -14,13 +14,9 @@ COPY conf/supervisor/conf.d /etc/supervisor/conf.d
 COPY conf/ssh/ssh_config /etc/ssh/ssh_config
 
 EXPOSE 80
-
 WORKDIR /symfony
 
-# volumes
-VOLUME ["/var/log"]
-
-VOLUME ["/symfony"]
+VOLUME ["/var/log", "/symfony"]
 
 ENTRYPOINT ["supervisord"]
 CMD ["-n", "-c", "/etc/supervisor/supervisord.conf"]
