@@ -1,9 +1,9 @@
-FROM php:fpm-jessie
-
+FROM php:7.1-fpm-stretch
+LABEL maintainer="llitfkitfk@gmail.com"
 RUN apt-get update \
-    && apt-get install -y glusterfs-client supervisor git nginx openssh-server vim locales \
+    && apt-get install -y supervisor git nginx openssh-server vim locales \
     # gd
-    libjpeg62-turbo-dev libpng12-dev libfreetype6-dev \ 
+    libjpeg-dev libpng-dev libfreetype6-dev \ 
     # intl
     libicu-dev \
     # mcrypt
