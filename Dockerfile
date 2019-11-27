@@ -21,5 +21,7 @@ WORKDIR /symfony
 
 VOLUME ["/var/log", "/symfony"]
 
-ENTRYPOINT ["supervisord"]
-CMD ["-n", "-c", "/etc/supervisor/supervisord.conf"]
+COPY ./docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+ENTRYPOINT [ "docker-entrypoint.sh" ]
+
+CMD [ "-n", "-c", "/etc/supervisor/supervisord.conf" ]
