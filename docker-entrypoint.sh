@@ -5,12 +5,12 @@ set -e
 if [ "$#" -eq 0 ] || [ "${1#-}" != "$1" ];then
     for i in `seq 6`
     do
-        if [ -f /tmp/start  ];then
+        if [ -f /symfony/web/uploads/start  ];then
             ./supervisord.sh "$@" &
             echo "supervisord is running"
             while true
             do
-                if [ -f /tmp/start ];then
+                if [ -f /symfony/web/uploads/start ];then
                     echo "gfs is running"
                     sleep 5
                     continue
