@@ -6,7 +6,7 @@ if [ "$#" -eq 0 ] || [ "${1#-}" != "$1" ];then
     for i in `seq 6`
     do
         if [ -f /symfony/web/uploads/start  ];then
-            ./supervisord.sh "$@" &
+            supervisord.sh "$@" &
             echo "supervisord is running"
             while true
             do
